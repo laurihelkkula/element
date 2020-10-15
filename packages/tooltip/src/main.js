@@ -142,7 +142,7 @@ export default {
       this.debounceClose();
     },
     handleFocus() {
-      if (!this.$slots.default || !this.$slots.default.length) {        
+      if (!this.$slots.default || !this.$slots.default.length) {
         this.focusing = true;
         this.show();
         return;
@@ -150,7 +150,7 @@ export default {
       const instance = this.$slots.default[0].componentInstance;
       if (instance && instance.focus) {
         instance.focus();
-      } else {      
+      } else {
         this.focusing = true;
         this.show();
       }
