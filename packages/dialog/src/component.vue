@@ -38,6 +38,7 @@
   import Popup from 'element-ui/src/utils/popup';
   import Migrating from 'element-ui/src/mixins/migrating';
   import emitter from 'element-ui/src/mixins/emitter';
+  import { on, off } from 'element-ui/src/utils/dom';
 
   export default {
     name: 'ElDialog',
@@ -116,7 +117,7 @@
         if (val) {
           this.closed = false;
           this.$emit('open');
-          this.$el.addEventListener('scroll', this.updatePopper);
+          on(this.$el, 'scroll', this.updatePopper);
           this.$nextTick(() => {
             this.$refs.dialog.scrollTop = 0;
           });
@@ -124,7 +125,7 @@
             document.body.appendChild(this.$el);
           }
         } else {
-          this.$el.removeEventListener('scroll', this.updatePopper);
+          off(this.$el, 'scroll', this.updatePopper);
           if (!this.closed) this.$emit('close');
         }
       }
@@ -189,6 +190,10 @@
           document.body.appendChild(this.$el);
         }
       }
+    },
+
+    beforeDestroy() {
+      off(this.$el, 'scroll', this.updatePopper);
     },
 
     destroyed() {
