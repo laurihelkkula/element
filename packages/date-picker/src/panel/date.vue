@@ -484,7 +484,7 @@
       }
     },
 
-    beforeDestroy() {      
+    beforeDestroy() {
       off(document.body, 'keydown', this.handleKeydown);
     },
 

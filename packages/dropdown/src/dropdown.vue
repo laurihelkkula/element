@@ -86,18 +86,19 @@
 
     beforeDestroy() {
       off(this.triggerElm, 'keydown', this.handleTriggerKeyDown);
-      off(this.dropdownElm, 'keydown', this.handleItemKeyDown); 
+      off(this.dropdownElm, 'keydown', this.handleItemKeyDown);
       off(this.triggerElem, 'focus', this.handleFocus);
       off(this.triggerElem, 'blur', this.handleBlur);
-      off(this.triggerElem, 'click', this.handleSplitClick);      
-      off(this.triggerElm, 'mouseenter', show);
-      off(this.triggerElm, 'mouseleave', hide);
-      off(this.dropdownElm, 'mouseenter', show);
-      off(this.dropdownElm, 'mouseleave', hide);
-      off(this.triggerElm, 'click', handleClick);
+      off(this.triggerElem, 'click', this.handleSplitClick);
+      off(this.triggerElm, 'mouseenter', this.show);
+      off(this.triggerElm, 'mouseleave', this.hide);
+      off(this.dropdownElm, 'mouseenter', this.show);
+      off(this.dropdownElm, 'mouseleave', this.hide);
+      off(this.triggerElm, 'click', this.handleClick);
 
-      if(this.timeout)
+      if (this.timeout) {
         clearTimeout(this.timeout);
+      }
     },
 
     watch: {
@@ -231,10 +232,10 @@
           ? this.$refs.trigger.$el
           : this.$slots.default[0].elm;
 
-        let dropdownElm = this.dropdownElm = this.$slots.dropdown[0].elm;
+        this.dropdownElm = this.$slots.dropdown[0].elm;
 
-        on(this.triggerElm, 'keydown', this.handleTriggerKeyDown);        
-        on(this.dropdownElm, 'keydown', this.handleItemKeyDown, true); 
+        on(this.triggerElm, 'keydown', this.handleTriggerKeyDown);
+        on(this.dropdownElm, 'keydown', this.handleItemKeyDown, true);
         // 控制自定义元素的样式
         if (!splitButton) {
           on(this.triggerElem, 'focus', this.handleFocus);

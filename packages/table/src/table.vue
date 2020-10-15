@@ -391,10 +391,6 @@
       },
 
       bindEvents() {
-        const { headerWrapper, footerWrapper } = this.$refs;
-        const refs = this.$refs;
-        let self = this;
-
         on(this.bodyWrapper, 'scroll', this.handleScroll);
 
         if (this.fit) {
@@ -403,6 +399,9 @@
       },
 
       handleScroll() {
+        const { headerWrapper, footerWrapper } = this.$refs;
+        const refs = this.$refs;
+        let self = this;
         if (headerWrapper) headerWrapper.scrollLeft = this.scrollLeft;
         if (footerWrapper) footerWrapper.scrollLeft = this.scrollLeft;
         if (refs.fixedBodyWrapper) refs.fixedBodyWrapper.scrollTop = this.scrollTop;
