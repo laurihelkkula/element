@@ -5,6 +5,7 @@
   import ElButton from 'element-ui/packages/button';
   import ElButtonGroup from 'element-ui/packages/button-group';
   import { generateId } from 'element-ui/src/utils/util';
+  import { on, off } from 'element-ui/src/utils/dom';
 
   export default {
     name: 'ElDropdown',
@@ -81,6 +82,22 @@
       this.$on('menu-item-click', this.handleMenuItemClick);
       this.initEvent();
       this.initAria();
+    },
+
+    beforeDestroy() {
+      off(this.triggerElm, 'keydown', this.handleTriggerKeyDown);
+      off(this.dropdownElm, 'keydown', this.handleItemKeyDown); 
+      off(this.triggerElem, 'focus', this.handleFocus);
+      off(this.triggerElem, 'blur', this.handleBlur);
+      off(this.triggerElem, 'click', this.handleSplitClick);      
+      off(this.triggerElm, 'mouseenter', show);
+      off(this.triggerElm, 'mouseleave', hide);
+      off(this.dropdownElm, 'mouseenter', show);
+      off(this.dropdownElm, 'mouseleave', hide);
+      off(this.triggerElm, 'click', handleClick);
+
+      if(this.timeout)
+        clearTimeout(this.timeout);
     },
 
     watch: {
@@ -176,6 +193,15 @@
         }
         return;
       },
+      handleFocus() {
+        this.focusing = true;
+      },
+      handleBlur() {
+        this.focusing = false;
+      },
+      handleSplitClick() {
+        this.focusing = false;
+      },
       resetTabindex(ele) { // 下次tab时组件聚焦元素
         this.removeTabindex();
         ele.setAttribute('tabindex', '0'); // 下次期望的聚焦元素
@@ -200,34 +226,28 @@
         }
       },
       initEvent() {
-        let { trigger, show, hide, handleClick, splitButton, handleTriggerKeyDown, handleItemKeyDown } = this;
+        let { trigger, show, hide, handleClick, splitButton } = this;
         this.triggerElm = splitButton
           ? this.$refs.trigger.$el
           : this.$slots.default[0].elm;
 
         let dropdownElm = this.dropdownElm = this.$slots.dropdown[0].elm;
 
-        this.triggerElm.addEventListener('keydown', handleTriggerKeyDown); // triggerElm keydown
-        dropdownElm.addEventListener('keydown', handleItemKeyDown, true); // item keydown
+        on(this.triggerElm, 'keydown', this.handleTriggerKeyDown);        
+        on(this.dropdownElm, 'keydown', this.handleItemKeyDown, true); 
         // 控制自定义元素的样式
         if (!splitButton) {
-          this.triggerElm.addEventListener('focus', () => {
-            this.focusing = true;
-          });
-          this.triggerElm.addEventListener('blur', () => {
-            this.focusing = false;
-          });
-          this.triggerElm.addEventListener('click', () => {
-            this.focusing = false;
-          });
+          on(this.triggerElem, 'focus', this.handleFocus);
+          on(this.triggerElem, 'blur', this.handleBlur);
+          on(this.triggerElem, 'click', this.handleSplitClick);
         }
         if (trigger === 'hover') {
-          this.triggerElm.addEventListener('mouseenter', show);
-          this.triggerElm.addEventListener('mouseleave', hide);
-          dropdownElm.addEventListener('mouseenter', show);
-          dropdownElm.addEventListener('mouseleave', hide);
+          on(this.triggerElm, 'mouseenter', show);
+          on(this.triggerElm, 'mouseleave', hide);
+          on(this.dropdownElm, 'mouseenter', show);
+          on(this.dropdownElm, 'mouseleave', hide);
         } else if (trigger === 'click') {
-          this.triggerElm.addEventListener('click', handleClick);
+          on(this.triggerElm, 'click', handleClick);
         }
       },
       handleMenuItemClick(command, instance) {
