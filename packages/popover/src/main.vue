@@ -90,13 +90,7 @@ export default {
       popper.setAttribute('tabindex', 0);
 
       if (this.trigger !== 'click') {
-        on(reference, 'focusin', () => {
-          this.handleFocus();
-          const instance = reference.__vue__;
-          if (instance && typeof instance.focus === 'function') {
-            instance.focus();
-          }
-        });
+        on(reference, 'focusin', this.handleFocus);
         on(popper, 'focusin', this.handleFocus);
         on(reference, 'focusout', this.handleBlur);
         on(popper, 'focusout', this.handleBlur);
@@ -136,6 +130,12 @@ export default {
     handleFocus() {
       addClass(this.referenceElm, 'focusing');
       if (this.trigger !== 'manual') this.showPopper = true;
+      if (this.trigger !== 'click') {
+        const instance = this.referenceElm.__vue__;
+        if (instance && typeof instance.focus === 'function') {
+          instance.focus();
+        }
+      }
     },
     handleClick() {
       removeClass(this.referenceElm, 'focusing');
@@ -190,7 +190,7 @@ export default {
   },
 
   destroyed() {
-    const reference = this.reference;
+    const reference = this.referenceElm;
 
     off(reference, 'click', this.doToggle);
     off(reference, 'mouseup', this.doClose);
@@ -201,7 +201,18 @@ export default {
     off(reference, 'mouseup', this.doClose);
     off(reference, 'mouseleave', this.handleMouseLeave);
     off(reference, 'mouseenter', this.handleMouseEnter);
+    off(reference, 'focusin', this.handleFocus);
+    off(reference, 'focusout', this.handleBlur);
+    off(reference, 'keydown', this.handleKeydown);
+    off(reference, 'click', this.handleClick);
+
     off(document, 'click', this.handleDocumentClick);
+
+    const popper = this.popper;
+    off(popper, 'focusin', this.handleFocus);
+    off(popper, 'focusout', this.handleBlur);
+    off(popper, 'mouseleave', this.handleMouseLeave);
+    off(popper, 'mouseenter', this.handleMouseEnter);
   }
 };
 </script>
