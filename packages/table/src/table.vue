@@ -224,6 +224,7 @@
   import TableBody from './table-body';
   import TableHeader from './table-header';
   import TableFooter from './table-footer';
+  import { on, off } from 'element-ui/src/utils/dom';
 
   let tableIdSeed = 1;
 
@@ -394,24 +395,26 @@
         const refs = this.$refs;
         let self = this;
 
-        this.bodyWrapper.addEventListener('scroll', function() {
-          if (headerWrapper) headerWrapper.scrollLeft = this.scrollLeft;
-          if (footerWrapper) footerWrapper.scrollLeft = this.scrollLeft;
-          if (refs.fixedBodyWrapper) refs.fixedBodyWrapper.scrollTop = this.scrollTop;
-          if (refs.rightFixedBodyWrapper) refs.rightFixedBodyWrapper.scrollTop = this.scrollTop;
-          const maxScrollLeftPosition = this.scrollWidth - this.offsetWidth - 1;
-          const scrollLeft = this.scrollLeft;
-          if (scrollLeft >= maxScrollLeftPosition) {
-            self.scrollPosition = 'right';
-          } else if (scrollLeft === 0) {
-            self.scrollPosition = 'left';
-          } else {
-            self.scrollPosition = 'middle';
-          }
-        });
+        on(this.bodyWrapper, 'scroll', this.handleScroll);
 
         if (this.fit) {
           addResizeListener(this.$el, this.resizeListener);
+        }
+      },
+
+      handleScroll() {
+        if (headerWrapper) headerWrapper.scrollLeft = this.scrollLeft;
+        if (footerWrapper) footerWrapper.scrollLeft = this.scrollLeft;
+        if (refs.fixedBodyWrapper) refs.fixedBodyWrapper.scrollTop = this.scrollTop;
+        if (refs.rightFixedBodyWrapper) refs.rightFixedBodyWrapper.scrollTop = this.scrollTop;
+        const maxScrollLeftPosition = this.scrollWidth - this.offsetWidth - 1;
+        const scrollLeft = this.scrollLeft;
+        if (scrollLeft >= maxScrollLeftPosition) {
+          self.scrollPosition = 'right';
+        } else if (scrollLeft === 0) {
+          self.scrollPosition = 'left';
+        } else {
+          self.scrollPosition = 'middle';
         }
       },
 
@@ -601,8 +604,9 @@
       }
     },
 
-    destroyed() {
+    beforeDestroy() {
       if (this.resizeListener) removeResizeListener(this.$el, this.resizeListener);
+      off(this.bodyWrapper, 'scroll', this.handleScroll);
     },
 
     mounted() {
