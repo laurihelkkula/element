@@ -77,7 +77,7 @@ export default {
 
   mounted() {
     let reference = this.referenceElm = this.reference || this.$refs.reference;
-    const popper = this.popper || this.$refs.popper;
+    const popper = this.popperReference = this.popper || this.$refs.popper;
 
     if (!reference && this.$slots.reference && this.$slots.reference[0]) {
       reference = this.referenceElm = this.$slots.reference[0].elm;
@@ -189,7 +189,7 @@ export default {
     }
   },
 
-  destroyed() {
+  beforeDestroy() {
     const reference = this.referenceElm;
 
     off(reference, 'click', this.doToggle);
@@ -208,7 +208,7 @@ export default {
 
     off(document, 'click', this.handleDocumentClick);
 
-    const popper = this.popper;
+    const popper = this.popperReference;
     off(popper, 'focusin', this.handleFocus);
     off(popper, 'focusout', this.handleBlur);
     off(popper, 'mouseleave', this.handleMouseLeave);
