@@ -50,6 +50,7 @@
   import Dropdown from './dropdown';
   import ElCheckbox from 'element-ui/packages/checkbox';
   import ElCheckboxGroup from 'element-ui/packages/checkbox-group';
+  import { on, off } from 'element-ui/src/utils/dom';
 
   export default {
     name: 'ElTableFilterPanel',
@@ -179,9 +180,7 @@
     mounted() {
       this.popperElm = this.$el;
       this.referenceElm = this.cell;
-      this.table.bodyWrapper.addEventListener('scroll', () => {
-        this.updatePopper();
-      });
+      on(this.table.bodyWrapper, 'scroll', this.updatePopper);
 
       this.$watch('showPopper', (value) => {
         if (this.column) this.column.filterOpened = value;
@@ -191,6 +190,9 @@
           Dropdown.close(this);
         }
       });
+    },
+    beforeDestroy() {
+      off(this.table.bodyWrapper, 'scroll', this.updatePopper);
     },
     watch: {
       showPopper(val) {
