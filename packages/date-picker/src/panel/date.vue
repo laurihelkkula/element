@@ -168,6 +168,7 @@
   import YearTable from '../basic/year-table';
   import MonthTable from '../basic/month-table';
   import DateTable from '../basic/date-table';
+  import { on, off } from 'element-ui/src/utils/dom';
 
   export default {
     mixins: [Locale],
@@ -390,12 +391,12 @@
       },
 
       handleEnter() {
-        document.body.addEventListener('keydown', this.handleKeydown);
+        on(document.body, 'keydown', this.handleKeydown);
       },
 
       handleLeave() {
         this.$emit('dodestroy');
-        document.body.removeEventListener('keydown', this.handleKeydown);
+        off(document.body, 'keydown', this.handleKeydown);
       },
 
       handleKeydown(event) {
@@ -481,6 +482,10 @@
         // otherwise, return now (the moment this method gets called)
         return this.defaultValue ? new Date(this.defaultValue) : new Date();
       }
+    },
+
+    beforeDestroy() {      
+      off(document.body, 'keydown', this.handleKeydown);
     },
 
     components: {
