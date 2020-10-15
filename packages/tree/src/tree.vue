@@ -36,6 +36,7 @@
   import {t} from 'element-ui/src/locale';
   import emitter from 'element-ui/src/mixins/emitter';
   import { addClass, removeClass } from 'element-ui/src/utils/dom';
+  import { on, off } from 'element-ui/src/utils/dom';
 
   export default {
     name: 'ElTree',
@@ -484,7 +485,11 @@
 
     mounted() {
       this.initTabIndex();
-      this.$el.addEventListener('keydown', this.handleKeydown);
+      on(this.$el, 'keydown', this.handleKeydown);
+    },
+
+    beforeDestroy() {
+      off(this.$el, 'keydown', this.handleKeydown);
     },
 
     updated() {
