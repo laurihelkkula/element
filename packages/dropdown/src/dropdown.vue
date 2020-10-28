@@ -86,7 +86,7 @@
 
     beforeDestroy() {
       off(this.triggerElm, 'keydown', this.handleTriggerKeyDown);
-      off(this.dropdownElm, 'keydown', this.handleItemKeyDown);
+      off(this.dropdownElm, 'keydown', this.handleItemKeyDown, false);
       off(this.triggerElem, 'focus', this.handleFocus);
       off(this.triggerElem, 'blur', this.handleBlur);
       off(this.triggerElem, 'click', this.handleSplitClick);
